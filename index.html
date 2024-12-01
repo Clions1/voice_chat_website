@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesli Konuşma</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Clions Sesli Sohbet Sitesi</h1>
+    <p><b>Bağlanmak için arkadaşınızın kullanıcı adını girin veya kullanıcı adınızı paylaşın.</b></p>
+    <input type="text" id="friendIdInput" placeholder="Arkadaşınızın kullanıcı adı">
+    <button id="startCall">Görüşmeye Başla</button>
+    <button id="muteButton">Mikrofonu Kapat</button>
+    <p><b>Sizin Kullanıcı Adınız:</b> <span id="myId"></span></p>
+    <div id="participants">
+        <h2>Katılımcılar:</h2>
+        <ul id="participantList"></ul>
+    </div>
+    <audio id="localAudio" autoplay muted></audio>
+    <audio id="remoteAudio" autoplay></audio>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="script.js"></script>
+    <footer>
+        &copy; Developed by Clions. All rights reserved.
+    </footer>
+</body>
+</html>
