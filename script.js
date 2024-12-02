@@ -14,12 +14,26 @@ const friendIdInput = document.getElementById("friendIdInput");
 const myIdDisplay = document.getElementById("myId");
 const participantList = document.getElementById("participantList");
 const localAudio = document.getElementById("localAudio");
-const remoteAudio = document.getElementById("remoteAudio");
 
 let localStream;
 let isMuted = false;
 let participants = {};
 let connections = {};
+
+function addAudioElement(participantId, stream) {
+    const audioElement = document.createElement("audio");
+    audioElement.autoplay = true;
+    audioElement.id = `audio-${participantId}`;
+    document.body.appendChild(audioElement);
+    audioElement.srcObject = stream;
+}
+
+function removeAudioElement(participantId) {
+    const audioElement = document.getElementById(`audio-${participantId}`);
+    if (audioElement) {
+        document.body.removeChild(audioElement);
+    }
+}
 
 navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
@@ -35,15 +49,31 @@ peer.on("open", id => {
 
 peer.on("call", call => {
     call.answer(localStream);
+
     call.on("stream", remoteStream => {
-        remoteAudio.srcObject = remoteStream;
+        addAudioElement(call.peer, remoteStream);
+    });
+
+    call.on("close", () => {
+        removeAudioElement(call.peer);
     });
 });
 
 peer.on("connection", conn => {
     connections[conn.peer] = conn;
+
+    conn.on("open", () => {
+        conn.send({
+            type: "updateParticipants",
+            participants,
+        });
+    });
+
     conn.on("data", data => {
-        if (data.type === "join") {
+        if (data.type === "updateParticipants") {
+            participants = data.participants;
+            renderParticipants();
+        } else if (data.type === "join") {
             updateParticipants(data.id, "Bağlı");
         } else if (data.type === "leave") {
             removeParticipant(data.id);
@@ -52,6 +82,7 @@ peer.on("connection", conn => {
 
     conn.on("close", () => {
         removeParticipant(conn.peer);
+        removeAudioElement(conn.peer);
         delete connections[conn.peer];
     });
 });
@@ -59,12 +90,14 @@ peer.on("connection", conn => {
 function updateParticipants(id, status) {
     participants[id] = status;
     renderParticipants();
+    broadcastParticipantList();
 }
 
 function removeParticipant(id) {
     if (participants[id]) {
         delete participants[id];
         renderParticipants();
+        broadcastParticipantList();
     }
 }
 
@@ -77,6 +110,16 @@ function renderParticipants() {
     }
 }
 
+function broadcastParticipantList() {
+    const participantData = {
+        type: "updateParticipants",
+        participants,
+    };
+    for (let connId in connections) {
+        connections[connId].send(participantData);
+    }
+}
+
 startCallButton.addEventListener("click", () => {
     const friendId = friendIdInput.value.trim();
     if (!friendId) {
@@ -86,7 +129,11 @@ startCallButton.addEventListener("click", () => {
 
     const call = peer.call(friendId, localStream);
     call.on("stream", remoteStream => {
-        remoteAudio.srcObject = remoteStream;
+        addAudioElement(friendId, remoteStream);
+    });
+
+    call.on("close", () => {
+        removeAudioElement(friendId);
     });
 
     const conn = peer.connect(friendId);
@@ -98,6 +145,7 @@ startCallButton.addEventListener("click", () => {
 
     conn.on("close", () => {
         removeParticipant(friendId);
+        removeAudioElement(friendId);
     });
 });
 

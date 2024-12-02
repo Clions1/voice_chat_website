@@ -1,43 +1,43 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
-    background-color: gray;
+body { 
+    font-family: Arial, sans-serif; 
+    text-align: center; 
+    margin: 50px; 
+    background-color: gray; 
     color: white;
 }
 
-audio {
-    margin-top: 20px;
+audio { 
+    margin-top: 20px; 
 }
 
-button, input {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 10px;
+button, input { 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    margin: 10px; 
 }
 
-#participants {
-    margin-top: 20px;
-    text-align: left;
-    display: inline-block;
+#participants { 
+    margin-top: 20px; 
+    text-align: left; 
+    display: inline-block; 
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+ul { 
+    list-style: none; 
+    padding: 0; 
 }
 
-li {
-    padding: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    background-color: #444;
-    color: white;
+li { 
+    padding: 5px; 
+    border: 1px solid #ccc; 
+    margin-bottom: 5px; 
+    background-color: white; 
+    color: black;
 }
 
-footer {
-    margin-top: 50px;
-    text-align: center;
-    font-size: 14px;
-    color: white;
+footer { 
+    margin-top: 50px; 
+    text-align: center; 
+    font-size: 14px; 
+    color: white; 
 }
